@@ -37,12 +37,15 @@ class Dialogue:
         content = re.sub('{.*?\\}', '', s)
         # print(content)
         ss = content.split('\\N')
-        assert len(ss) <= 2
-        self.chinese = ss[0]
+        # assert len(ss) <= 2
         if len(ss) == 1:
-            self.english = ''            
+            self.chinese = ss[0]
+            self.english = ''
         else:
-            self.english = ss[1]
+            self.chinese = ss[0]
+            for s in ss[1:-1]:
+                self.chinese += s
+            self.english = ss[-1]
 
     def get_time(self):
         return self.sh * 60 * 60 + self.sm * 60 + self.ss
@@ -62,8 +65,8 @@ class Ass2Lrc:
 
     def process(self, file_in_ass, file_out_lrc):
         print(file_in_ass)
-        pf = open(file_in_ass)
-        pf_lrc = open(file_out_lrc, mode='w')
+        pf = open(file_in_ass, encoding='utf-8')
+        pf_lrc = open(file_out_lrc, mode='w', encoding='utf-8')
         for idx, line in enumerate(pf):
             line = line.strip()
             if not line.startswith('Dialogue:'):
@@ -75,7 +78,7 @@ class Ass2Lrc:
             if self.off_s < 0:
                 self.off_s = self.dialogue.get_time()
             line = self.dialogue.get_lrc(-self.off_s)
-            print(line)
+            # print(line)
             pf_lrc.write("%s\n" % line)
         pf.close
         pf_lrc.close()
@@ -89,7 +92,7 @@ def zcs(dir_ass, dir_lrc):
             # print(ass)
             s = int(ass[9:11])
             e = int(ass[12:14])
-            print(s, e)
+            # print(s, e)
             ass = os.path.join(dir1, ass)
             lrc = "Friends%d%02d.lrc" % (s, e)
             lrc = os.path.join(dir_lrc, lrc)
@@ -98,8 +101,8 @@ def zcs(dir_ass, dir_lrc):
         # break
 
 if __name__ == "__main__":
-    file = './Friends.ass/Friends.S01.1994/Friends.S01E01.1994.BluRay.1080p.x265.10bit.MNHD-FRDS.ass'
-    file_lrc = './Friends.lrc/Friends101.lrc'
-    Ass2Lrc().process(file, file_lrc)
+    # file = './Friends.ass/Friends.S01.1994/Friends.S01E01.1994.BluRay.1080p.x265.10bit.MNHD-FRDS.ass'
+    # file_lrc = './Friends.lrc/Friends101.lrc'
+    # Ass2Lrc().process(file, file_lrc)
 
-    # zcs('Friends.ass', 'Friends.lrc')
+    zcs('Friends.ass', 'Friends.lrc')
