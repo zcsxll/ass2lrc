@@ -80,7 +80,26 @@ class Ass2Lrc:
         pf.close
         pf_lrc.close()
 
+def zcs(dir_ass, dir_lrc):
+    sub_dirs = os.listdir(dir_ass)
+    for sub_sir in sub_dirs:
+        dir1 = os.path.join(dir_ass, sub_sir)
+        asses = os.listdir(dir1)
+        for ass in asses:
+            # print(ass)
+            s = int(ass[9:11])
+            e = int(ass[12:14])
+            print(s, e)
+            ass = os.path.join(dir1, ass)
+            lrc = "Friends%d%02d.lrc" % (s, e)
+            lrc = os.path.join(dir_lrc, lrc)
+            # print(lrc)
+            Ass2Lrc().process(ass, lrc)
+        # break
+
 if __name__ == "__main__":
     file = './Friends.ass/Friends.S01.1994/Friends.S01E01.1994.BluRay.1080p.x265.10bit.MNHD-FRDS.ass'
     file_lrc = './Friends.lrc/Friends101.lrc'
     Ass2Lrc().process(file, file_lrc)
+
+    # zcs('Friends.ass', 'Friends.lrc')
